@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "setup": "npm i typescript -D && mkdir dist",
+    "setup": "npm i typescript -D && npm i dotenv",
     "dev": "npx nodemon",
     "build": "rimraf ./dist && tsc && tsc-alias",
     "start": "node dist/index.js",
@@ -21,6 +21,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/lodash": "^4.17.4",
     "@types/node": "^20.12.12",
+    "@types/nodemailer": "^6.4.15",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
     "eslint": "^8.57.0",
@@ -40,6 +41,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mongodb": "^6.6.2"
+    "mongodb": "^6.6.2",
+    "nodemailer": "^6.9.13"
   }
 }
