@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "setup": "npm install typescript -D && mkdir -p logs && mkdir -p .vscode && touch .vscode/extensions.json && touch .env.local && touch .env.development.local && touch .env.test.local && touch .env.production.local",
+    "setup": "npm install typescript -D && mkdir dist",
     "dev": "npx nodemon",
     "build": "rimraf ./dist && tsc && tsc-alias",
     "start": "node dist/index.js",
