@@ -151,6 +151,9 @@ export const loginValidator = validate(
             if (user === null) {
               throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
             }
+            if (user.verify == 0) {
+              throw new Error(USERS_MESSAGES.YOU_MUST_TO_VERIFY_EMAIL)
+            }
             req.user = user // lưu user vào req để dùng ở loginController
             return true
           }
