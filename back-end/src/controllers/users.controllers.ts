@@ -12,7 +12,7 @@ import {
 import User from '~/model/schemas/User.schema'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
-import { generateEmailTemplate } from '~/helper/emailTemplate'
+import { generateEmailVerify } from '~/helper/emailTemplate'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
@@ -36,12 +36,12 @@ export const registerController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const result = await usersService.register(req.body) // thay luôn
+  const result = await usersService.register(req.body)
   const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.email_verify_token}`
-  const emailHtml = generateEmailTemplate(req.body.username, verificationLink, result.email_verify_token)
+  const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.email_verify_token)
   await sendMail({
     email: req.body.email,
-    subject: 'Email Verification Mail',
+    subject: 'Xác Nhận Đăng Ký',
     html: emailHtml
   })
   console.log(result)
