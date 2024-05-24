@@ -10,7 +10,7 @@ import RefreshToken from '~/model/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { generateEmailTemplate } from '~/helper/emailTemplate'
+import { generateEmailPassword } from '~/helper/emailTemplate'
 import sendMail from '~/helper/send.mail'
 config()
 class UsersService {
@@ -107,8 +107,7 @@ class UsersService {
         {
           $set: {
             email_verify_token: '',
-            verify: UserVerifyStatus.Verified,
-            updated_at: '$$NOW'
+            verify: UserVerifyStatus.Verified
           }
         }
         //set email_verify_token thành rỗng,và cập nhật ngày cập nhật, cập nhật status của verify
@@ -136,8 +135,7 @@ class UsersService {
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
         $set: {
-          email_verify_token,
-          updated_at: '$$NOW'
+          email_verify_token
         }
       }
     ])
@@ -165,7 +163,7 @@ class UsersService {
     //cập nhật vào forgot_password_token và user_id
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
-        $set: { forgot_password_token: forgot_password_token, updated_at: '$$NOW' }
+        $set: { forgot_password_token: forgot_password_token }
       }
     ])
     //gữi email cho người dùng đường link có cấu trúc như này
@@ -175,10 +173,10 @@ class UsersService {
     //ta log ra để test
     //todo Send mail
     const verificationLink = `${process.env.BACKEND_URL}/verify-forgot-password?forgot_password_token=${forgot_password_token}`
-    const emailHtml = generateEmailTemplate(email, verificationLink, forgot_password_token)
+    const emailHtml = generateEmailPassword(email, verificationLink, forgot_password_token)
     await sendMail({
       email: email,
-      subject: 'Email Verification Mail',
+      subject: 'Mail Xác Nhận Đổi Mật Khẩu',
       html: emailHtml
     })
 
@@ -198,8 +196,7 @@ class UsersService {
       {
         $set: {
           password: hashPassword(password),
-          forgot_password_token: '',
-          updated_at: '$$NOW'
+          forgot_password_token: ''
         }
       }
     ])
