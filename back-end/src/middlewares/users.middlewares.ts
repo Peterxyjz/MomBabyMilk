@@ -89,6 +89,8 @@ const forgotPasswordTokenSchema: ParamSchema = {
       }
       //nếu có thì decode nó để lấy đc thông tin của người dùng
       try {
+        console.log('value: ' + value)
+
         const decoded_forgot_password_token = await verifyToken({
           token: value,
           secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
@@ -425,3 +427,25 @@ export const resetPasswordValidator = validate(
 
 //không nên vào database và xóa luôn forgot_password_token của account
 //vì đôi khi họ click vào link , chưa kịp đổi mk thì họ bận gì đó, họ click lại sau
+
+export const checkEmailToken = async (req: Request, res: Response, next: NextFunction) => {
+  console.log('mid-body: ' + req.body)
+  console.log('mid-query: ' + req.query)
+  console.log(JSON.stringify(req.query))
+  console.log(req.body.email_verify_token)
+  const list = JSON.stringify(req.query)
+  console.log(req.query.email_verify_token)
+  req.body.email_verify_token = req.query.email_verify_token
+  next()
+}
+
+export const checkPasswordToken = async (req: Request, res: Response, next: NextFunction) => {
+  console.log('mid-body: ' + req.body)
+  console.log('mid-query: ' + req.query)
+  console.log(JSON.stringify(req.query))
+  console.log(req.body.forgot_password_token)
+  const list = JSON.stringify(req.query)
+  console.log(req.query.forgot_password_token)
+  req.body.forgot_password_token = req.query.forgot_password_token
+  next()
+}

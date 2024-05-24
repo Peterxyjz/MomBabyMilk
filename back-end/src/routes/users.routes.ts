@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import {
   accessTokenValidator,
+  checkEmailToken,
+  checkPasswordToken,
   emailVerifyTokenValidator,
   forgotPasswordValidator,
   loginValidator,
@@ -25,7 +27,7 @@ const usersRouter = Router()
 usersRouter.post('/register', registerValidator, wrapAsync(registerController))
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
-usersRouter.post('/verify-email', emailVerifyTokenValidator, wrapAsync(emailVerifyController))
+usersRouter.get('/verify-email', checkEmailToken, emailVerifyTokenValidator, wrapAsync(emailVerifyController))
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 /*
 des: cung cấp email để reset password, gữi email cho người dùng
@@ -44,8 +46,9 @@ method: POST
 Header: không cần, vì  ngta quên mật khẩu rồi, thì sao mà đăng nhập để có authen đc
 body: {forgot_password_token: string}
 */
-usersRouter.post(
+usersRouter.get(
   '/verify-forgot-password',
+  checkPasswordToken,
   verifyForgotPasswordTokenValidator,
   wrapAsync(verifyForgotPasswordTokenController)
 )

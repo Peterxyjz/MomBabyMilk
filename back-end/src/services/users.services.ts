@@ -10,6 +10,8 @@ import RefreshToken from '~/model/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
 import { USERS_MESSAGES } from '~/constants/messages'
+import { generateEmailTemplate } from '~/helper/emailTemplate'
+import sendMail from '~/helper/send.mail'
 config()
 class UsersService {
   private signAccessAndRefreshToken(user_id: string) {
@@ -157,7 +159,7 @@ class UsersService {
   //JWT_SECRET_FORGOT_PASSWORD_TOKEN = '123!@#22'
   //FORGOT_PASSWORD_TOKEN_EXPIRE_IN = '7d'
 
-  async forgotPassword(user_id: string) {
+  async forgotPassword(user_id: string, email: string) {
     //tạo ra forgot_password_token
     const forgot_password_token = await this.signForgotPasswordToken(user_id)
     //cập nhật vào forgot_password_token và user_id
@@ -171,7 +173,17 @@ class UsersService {
     //xxxx trong đó xxxx là forgot_password_token
     //sau này ta sẽ dùng aws để làm chức năng gữi email, giờ ta k có
     //ta log ra để test
+    //todo Send mail
+    const verificationLink = `${process.env.BACKEND_URL}/verify-forgot-password?forgot_password_token=${forgot_password_token}`
+    const emailHtml = generateEmailTemplate(email, verificationLink, forgot_password_token)
+    await sendMail({
+      email: email,
+      subject: 'Email Verification Mail',
+      html: emailHtml
+    })
+
     console.log('forgot_password_token: ', forgot_password_token)
+
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
     }
