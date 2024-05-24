@@ -37,15 +37,16 @@ export const registerController = async (
   next: NextFunction
 ) => {
   const result = await usersService.register(req.body) // thay luôn
-  // const verificationLink = `${process.env.BACKEND_URL}/verify-email`
-  // const emailHtml = generateEmailTemplate(req.body.username, verificationLink, result.email_verify_token)
-  // await sendMail({
-  //   email: req.body.email,
-  //   subject: 'Email Verification Mail',
-  //   html: emailHtml
-  // })
+  const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.email_verify_token}`
+  const emailHtml = generateEmailTemplate(req.body.username, verificationLink, result.email_verify_token)
+  await sendMail({
+    email: req.body.email,
+    subject: 'Email Verification Mail',
+    html: emailHtml
+  })
   console.log(result)
-  //console.log(verificationLink)
+  console.log(verificationLink)
+
   return res.status(400).json({
     message: USERS_MESSAGES.REGISTER_SUCCESS,
     result: result
@@ -131,7 +132,8 @@ export const forgotPasswordController = async (
   const { _id } = req.user as User
   //cái _id này là objectid, nên ta phải chuyển nó về string
   //chứ không truyền trực tiếp vào hàm forgotPassword
-  const result = await usersService.forgotPassword((_id as ObjectId).toString())
+  const result = await usersService.forgotPassword((_id as ObjectId).toString(), req.user.email)
+
   return res.json(result)
 }
 
