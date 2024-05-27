@@ -1,3 +1,18 @@
+    /* background: url(../images/other-images/mobile-clock-wallpaper.jpg); */
+    /* background: url(../images/other-images/clock-face.png) 5% center no-repeat */
+      /* background: url(../images/sec.svg); */
+      /* background: url(../images/hour.svg);
+      background: url(../images/min.svg); */
+      /* background: url(../images/other-images/calender-bg.png); */
+          /* background-image: url(../images/other-images/maintenance-bg.jpg); */
+          /* url(../images/landing/title.gif */
+          /*../assets/images/landing/email-bg.jpg*/
+          /*../images/landing/left-left.png*/
+          /*../images/landing/leaf-right.png*/
+          /*../images/social-app/social-image.png*/
+          /*../images/other-images/bg-profile.png*/
+          /* ../images/icon/down- */
+          /* ../images/other-images/boxbg.jpg */
 :root {
     --theme-color: #0da487
 }
@@ -20273,7 +20288,7 @@ p.data-attributes svg {
 }
 
 .profile-greeting {
-    background-image: url(../images/dashboard/bg.jpg);
+    background-image: url(../images/bg.png);
     background-size: cover !important;
     background-repeat: no-repeat;
     background-position: center center;
@@ -20837,7 +20852,7 @@ p.data-attributes svg {
 .third-news-update .alert-sec .card.bg-img,
 .news .alert-sec .card.bg-img,
 .appointment-sec .alert-sec .card.bg-img {
-    background-image: url(../images/dashboard/bg.jpg);
+    background-image: url(../images/bg.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center
@@ -21835,7 +21850,8 @@ p.data-attributes svg {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
-    background: url(../images/other-images/mobile-clock-wallpaper.jpg);
+    /* background: url(../images/other-images/mobile-clock-wallpaper.jpg); */
+        background: url(../images/replace.jpg);
     background-repeat: no-repeat;
     background-size: cover;
     height: 365px;
@@ -21867,21 +21883,25 @@ p.data-attributes svg {
     width: 175px;
     height: 175px;
     display: block;
-    background: url(../images/other-images/clock-face.png) 5% center no-repeat
+    /* background: url(../images/other-images/clock-face.png) 5% center no-repeat */
+    background: url(../images/replace.jpg) 5% center no-repeat
 }
 
 .mobile-clock-widget .sec {
-    background: url(../images/sec.svg);
+    /* background: url(../images/sec.svg); */
+    background: url(../images/replace.jpg);
     z-index: 3
 }
 
 .mobile-clock-widget .min {
-    background: url(../images/min.svg);
+    /* background: url(../images/min.svg); */
+    background: url(../images/replace.jpg);
     z-index: 2
 }
 
 .mobile-clock-widget .hour {
-    background: url(../images/hour.svg);
+    /* background: url(../images/hour.svg); */
+    background: url(../images/replace.jpg);
     z-index: 1
 }
 
@@ -21894,7 +21914,8 @@ p.data-attributes svg {
 }
 
 .calender-widget .cal-img {
-    background: url(../images/other-images/calender-bg.png);
+    /* background: url(../images/other-images/calender-bg.png); */
+    background: url(../images/replace.jpg);
     background-size: cover;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
@@ -24838,7 +24859,8 @@ footer.blockquote-footer {
 }
 
 .error-wrapper.maintenance-bg {
-    background-image: url(../images/other-images/maintenance-bg.jpg);
+    /* background-image: url(../images/other-images/maintenance-bg.jpg); */
+        background-image: url(../images/replace.jpg);
     background-color: rgba(255, 255, 255, 0.6);
     background-blend-mode: overlay
 }
@@ -26869,8 +26891,8 @@ footer {
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(158, 107, 248, 0.5)), to(rgba(119, 101, 250, 0.5))), url(../assets/images/landing/title.gif);
-    background-image: linear-gradient(rgba(158, 107, 248, 0.5), rgba(119, 101, 250, 0.5)), url(../assets/images/landing/title.gif);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(158, 107, 248, 0.5)), to(rgba(119, 101, 250, 0.5))), url(../images/replace.jpg); /*url(../images/landing/title.gif*/
+    background-image: linear-gradient(rgba(158, 107, 248, 0.5), rgba(119, 101, 250, 0.5)), url(../images/replace.jpg);
     background-position: left;
     line-height: 1;
     font-size: calc(25px + (57 - 25) * ((100vw - 300px) / (1920 - 300)))
@@ -27324,7 +27346,7 @@ footer {
 }
 
 .email_bg {
-    background-image: url(../assets/images/landing/email-bg.jpg) !important
+    background-image: url(../images/replace.jpg) !important /*../assets/images/landing/email-bg.jpg*/
 }
 
 .app_bg {
@@ -27351,7 +27373,7 @@ footer {
 }
 
 .layout {
-    background-image: url(../assets/images/landing/email-bg.jpg)
+    background-image: url(../images/replace.jpg)  /*../assets/images/landing/email-bg.jpg*/
 }
 
 .layout {
@@ -27482,7 +27504,7 @@ footer {
     content: "";
     position: absolute;
     left: 0;
-    background-image: url(../images/landing/left-left.png);
+    background-image: url(../images/replace.jpg);/*../images/landing/left-left.png*/
     width: 250px;
     height: 165px;
     top: 0
@@ -27492,7 +27514,7 @@ footer {
     content: "";
     position: absolute;
     right: 0;
-    background-image: url(../images/landing/leaf-right.png);
+    background-image: url(../images/replace.jpg);/*../images/landing/leaf-right.png*/
     width: 250px;
     height: 208px;
     top: 0
@@ -30005,7 +30027,7 @@ footer {
 }
 
 .user-profile .hovercard .socialheader {
-    background: url(../images/social-app/social-image.png)
+    background: url(../images/replace.jpg)/*../images/social-app/social-image.png*/
 }
 
 .user-profile .hovercard .user-image .share-icons {
@@ -31237,7 +31259,7 @@ footer {
 }
 
 .user-profile .hovercard .cardheader {
-    background: url(../images/other-images/bg-profile.png);
+    background: url(../images/replace.jpg);/*../images/other-images/bg-profile.png*/
     background-size: cover;
     background-position: 10%;
     height: 470px
@@ -32573,7 +32595,7 @@ footer {
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     -webkit-appearance: none;
-    background: url(../images/icon/down-#222222.png) no-repeat 95%
+    background: url(../images/replace.jpg) no-repeat 95% /*../images/icon/down-*/
 }
 
 .single-section .single-sidebar .book-btn-section .rooms-section {
@@ -50097,7 +50119,7 @@ body[class*="dark-"] .main-white {
 }
 
 .page-wrapper.material-type .page-body-wrapper {
-    background-image: url(../images/other-images/boxbg.jpg);
+    background-image: url(../images/replace.jpg); /*../images/other-images/boxbg.jpg*/
     background-blend-mode: overlay;
     background-color: rgba(255, 255, 255, 0.5)
 }
@@ -55109,7 +55131,7 @@ html[dir="rtl"] .grow svg {
 }
 
 .box-layout {
-    background-image: url(../images/other-images/boxbg.jpg);
+    background-image: url(../images/replace.jpg); /*../images/other-images/boxbg.jpg*/
     background-blend-mode: overlay;
     background-color: rgba(255, 255, 255, 0.5)
 }
