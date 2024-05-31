@@ -46,7 +46,8 @@ export const loginForAdminController = async (req: Request, res: Response) => {
   return res.status(200).json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
     result: result,
-    user
+    user,
+    isAdmin: true
   })
 }
 

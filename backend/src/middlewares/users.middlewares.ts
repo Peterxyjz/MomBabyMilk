@@ -149,8 +149,6 @@ export const loginValidator = validate(
         trim: true,
         custom: {
           options: async (value, { req }) => {
-            console.log('do')
-
             const user = await databaseService.users.findOne({
               email: value,
               password: hashPassword(req.body.password)
@@ -179,16 +177,6 @@ export const loginValidator = validate(
           },
           errorMessage: USERS_MESSAGES.PASSWORD_LENGTH_MUST_BE_FROM_8_TO_50
         }
-        // isStrongPassword: {
-        //   options: {
-        //     minLength: 8,
-        //     minLowercase: 1,
-        //     minUppercase: 1,
-        //     minNumbers: 1,
-        //     minSymbols: 1
-        //   },
-        //   errorMessage: USERS_MESSAGES.PASSWORD_MUST_BE_STRONG
-        // }
       }
     },
     ['body']
