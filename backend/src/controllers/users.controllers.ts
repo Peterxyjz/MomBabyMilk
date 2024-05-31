@@ -24,9 +24,29 @@ export const loginController = async (req: Request, res: Response) => {
   const user_id = user._id as ObjectId // lấy _id từ user
   const result = await usersService.login(user_id.toString())
 
-  return res.status(400).json({
+  return res.status(200).json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
-    result: result
+    result: result,
+    user
+  })
+}
+//admin
+
+export const loginForAdminController = async (req: Request, res: Response) => {
+  const user = req.user as User // lấy user từ req
+  const user_id = user._id as ObjectId // lấy _id từ user
+  const isAdmin = await databaseService.roles.findOne({ role_name: 'Admin' })
+  if (isAdmin?._id?.toString() != user.role_id) {
+    return res.status(200).json({
+      message: USERS_MESSAGES.LOGIN_FAIL
+    })
+  }
+  const result = await usersService.login(user_id.toString())
+
+  return res.status(200).json({
+    message: USERS_MESSAGES.LOGIN_SUCCESS,
+    result: result,
+    user
   })
 }
 
@@ -36,18 +56,20 @@ export const registerController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const result = await usersService.register(req.body)
-  const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.email_verify_token}`
-  const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.email_verify_token)
+  console.log('dô register Controller')
+
+  const result = await usersService.register(req.body) // thay luôn
+  const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.user?.email_verify_token}`
+  const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.user?.email_verify_token as string)
   await sendMail({
     email: req.body.email,
-    subject: 'Xác Nhận Đăng Ký',
+    subject: 'Email Verification Mail',
     html: emailHtml
   })
   console.log(result)
   console.log(verificationLink)
 
-  return res.status(400).json({
+  return res.status(200).json({
     message: USERS_MESSAGES.REGISTER_SUCCESS,
     result: result
   })
@@ -67,7 +89,9 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
   //ta có thể tìm user thông qua email_verify_token do người dùng gui lên lên thế này nhưng hiệu năng sẽ kém
   //nên thay vào đó ta sẽ lấy thông tin _id của user từ decoded_email_verify_token mà ta thu đc từ middleware trước
   //và tìm user thông qua _id đó
-  const { user_id } = req.decoded_email_verify_token as TokenPayload
+  // const { user_id } = req.decoded_email_verify_token as TokenPayload
+  const user_id = req.decoded_email_verify_token as string
+
   const user = await databaseService.users.findOne({
     _id: new ObjectId(user_id)
   }) //hiệu năng cao hơn
@@ -90,9 +114,10 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
   const result = await usersService.verifyEmail(user_id)
   //để cập nhật lại email_verify_token thành rỗng và tạo ra access_token và refresh_token mới
   //gữi cho người vừa request email verify đang nhập
-  return res.json({
+  return res.status(200).json({
     message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,
-    result: result
+    result: result,
+    user
   })
 }
 
@@ -157,7 +182,7 @@ export const resetPasswordController = async (
   next: NextFunction
 ) => {
   //middleware resetPasswordValidator đã chạy rồi, nên ta có thể lấy đc user_id từ decoded_forgot_password_token
-  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const user_id = req.decoded_forgot_password_token as string
   const { password } = req.body
   //vào database tìm user thông qua user_id này và cập nhật lại password mới
   //vì vào database nên ta sẽ code ở user.services

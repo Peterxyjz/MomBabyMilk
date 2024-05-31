@@ -33,3 +33,16 @@ export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secre
     })
   })
 }
+
+export function hashToSixDigit(token: string) {
+  // Bước 1: Mã hóa chuỗi thành SHA-256
+  // const sha256Hash = crypto.createHash('sha256').update(inputString).digest('hex');
+
+  // Bước 2: Chuyển đổi mã băm thành số nguyên lớn (big integer)
+  const bigInt = BigInt('0x' + token)
+
+  // Bước 3: Chuyển đổi số nguyên lớn thành chuỗi và lấy 6 ký tự đầu tiên
+  const sixDigitString = bigInt.toString().slice(0, 6)
+
+  return sixDigitString
+}
