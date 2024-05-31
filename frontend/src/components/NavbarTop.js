@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import feather from 'feather-icons';
 import { Link } from 'react-router-dom';
+import logo from '../assets/images/logo/1.png';
 
 const NavbarTop = () => {
   return (
@@ -15,7 +16,7 @@ const NavbarTop = () => {
                 </span>
               </button>
               <Link to="/" className="web-logo nav-logo">
-                  <img src="../assets/images/logo/1.png" className="img-fluid blur-up lazyload" alt="Logo" />
+                <img src={logo} className="img-fluid lazyload" alt="Logo" />
               </Link>
               <div className="middle-box">
                 <SearchBox />
@@ -140,11 +141,27 @@ const CartItem = ({ image, name, price }) => {
   );
 };
 
-const AccountMenuItem = () => {
-    useEffect(() => {
-        feather.replace();
-      }, []);
 
+const AccountMenuItem = () => {
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        return JSON.parse(storedUser);
+      } catch (error) {
+        return null;
+      }
+    }
+    return null;
+  }); 
+  
+  const logOut = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
+  };
+  useEffect(() => {
+    feather.replace();
+  }, []);
   return (
     <li className="right-side onhover-dropdown">
       <div className="delivery-login-box">
@@ -153,20 +170,19 @@ const AccountMenuItem = () => {
         </div>
         <div className="delivery-detail">
           <h6>Hello,</h6>
-          <h5>My Account</h5>
+          <h5>{user ? user.username : "My Account"}</h5>
         </div>
       </div>
       <div className="onhover-div onhover-div-login">
         <ul className="user-box-name">
           <li className="product-box-contain">
-            <i></i>
-            <Link to="/sign-in">Sign In</Link>
+            <Link to="/sign-in">Đăng nhập</Link>
           </li>
           <li className="product-box-contain">
-            <Link to="/sign-up">Sign Up</Link>
+            <Link to="/sign-up">Đăng ký</Link>
           </li>
           <li className="product-box-contain">
-            <Link to="/forgot-password">Forgot Password</Link>
+            <Link type='submit' onClick={logOut} >Đăng xuất</Link>
           </li>
         </ul>
       </div>

@@ -43,7 +43,7 @@ const MainNav = () => {
 const NavItem = ({ name, submenu }) => {
   return (
     <li className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="javascript:void(0)" data-bs-toggle="dropdown">{name}</a>
+      <a className="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{name}</a>
       {submenu}
     </li>
   );
@@ -130,7 +130,7 @@ const CategoryDropdown = () => {
 const CategoryItem = ({ name, icon }) => {
   return (
     <li className="onhover-category-list">
-      <a href="javascript:void(0)" className="category-name">
+      <a href="#" className="category-name">
         <img src={icon} alt="" />
         <h6>{name}</h6>
         <i className="fa-solid fa-angle-right"></i>
@@ -148,15 +148,15 @@ const CategoryBox = () => {
           <h5>Organic Vegetables</h5>
         </div>
         <ul>
-          <li><a href="javascript:void(0)">Potato & Tomato</a></li>
-          <li><a href="javascript:void(0)">Cucumber & Capsicum</a></li>
+          <li><a href="#">Potato & Tomato</a></li>
+          <li><a href="#">Cucumber & Capsicum</a></li>
         </ul>
         <div className="category-title-box">
           <h5>Organic Vegetables</h5>
         </div>
         <ul>
-          <li><a href="javascript:void(0)">Potato & Tomato</a></li>
-          <li><a href="javascript:void(0)">Cucumber & Capsicum</a></li>
+          <li><a href="#">Potato & Tomato</a></li>
+          <li><a href="#">Cucumber & Capsicum</a></li>
         </ul>
       </div>
     </div>

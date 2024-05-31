@@ -2,7 +2,7 @@ import { body } from 'express-validator'
 import User from '~/model/schemas/User.schema'
 import databaseService from './database.services'
 import { RegisterReqBody } from '~/model/requests/User.requests'
-import { hashPassword } from '~/utils/crypto'
+import { hashPassword, hashToSixDigit } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import Role from '~/model/schemas/Role.schema'
@@ -10,7 +10,7 @@ import RefreshToken from '~/model/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
 import { config } from 'dotenv'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { generateEmailPassword } from '~/helper/emailTemplate'
+import { generateEmailVerify } from '~/helper/emailTemplate'
 import sendMail from '~/helper/send.mail'
 config()
 class UsersService {
@@ -39,15 +39,19 @@ class UsersService {
     const email_verify_token = await this.signEmailVerifyToken(user_id.toString())
     //ta đành phải tự tạo user_id thay vì để mongodb tự tạo
     //vì ta cần user_id để tạo email_verify_token
+    const digit = await hashToSixDigit(user_id.toString())
+    console.log('6 so: ', digit)
     const result = await databaseService.users.insertOne(
       new User({
         ...payload,
         _id: user_id,
-        email_verify_token,
+        email_verify_token: digit,
         password: hashPassword(payload.password),
         role_id: roleId
       })
     )
+    const user = await databaseService.users.findOne({ _id: user_id })
+
     //insertOne sẽ trả về 1 object, trong đó có thuộc tính insertedId là user_Id của user vừa tạo
     //vì vậy ta sẽ lấy user_Id đó ra để tạo token
     const user_Id = result.insertedId.toString()
@@ -62,10 +66,11 @@ class UsersService {
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ user_id: new ObjectId(user_Id), token: refresh_token })
     )
+
     //user_id ta có là string, mà trong database thì user_id là ObjectId
     //nên ta không truyền là user_id: user_id, mà là user_id: new ObjectId(user_id)
     console.log('email_verify_token', email_verify_token) //mô phỏng send email, test xong xóa
-    return { access_token, refresh_token, email_verify_token }
+    return { access_token, refresh_token, email_verify_token, user }
     //ta sẽ return 2 cái này về cho client
     //thay vì return user_Id về cho client
   }
@@ -107,7 +112,8 @@ class UsersService {
         {
           $set: {
             email_verify_token: '',
-            verify: UserVerifyStatus.Verified
+            verify: UserVerifyStatus.Verified,
+            updated_at: '$$NOW'
           }
         }
         //set email_verify_token thành rỗng,và cập nhật ngày cập nhật, cập nhật status của verify
@@ -131,11 +137,14 @@ class UsersService {
     const email_verify_token = await this.signEmailVerifyToken(user_id)
     //chưa làm chức năng gữi email, nên giả bộ ta đã gữi email cho client rồi, hiển thị bằng console.log
     console.log('resend verify email token', email_verify_token)
+    const digit = await hashToSixDigit(user_id)
+
     //vào database và cập nhật lại email_verify_token mới trong table user
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
         $set: {
-          email_verify_token
+          email_verify_token: digit,
+          updated_at: '$$NOW'
         }
       }
     ])
@@ -161,27 +170,34 @@ class UsersService {
     //tạo ra forgot_password_token
     const forgot_password_token = await this.signForgotPasswordToken(user_id)
     //cập nhật vào forgot_password_token và user_id
+    // await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
+    //   {
+    //     $set: { forgot_password_token: forgot_password_token, updated_at: '$$NOW' }
+    //   }
+    // ])
+    const digit = hashToSixDigit(user_id)
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
-        $set: { forgot_password_token: forgot_password_token }
+        $set: { forgot_password_token: digit, updated_at: '$$NOW' }
       }
     ])
+
     //gữi email cho người dùng đường link có cấu trúc như này
     //http://appblabla/forgot-password?token=xxxx
     //xxxx trong đó xxxx là forgot_password_token
     //sau này ta sẽ dùng aws để làm chức năng gữi email, giờ ta k có
     //ta log ra để test
     //todo Send mail
-    const verificationLink = `${process.env.BACKEND_URL}/verify-forgot-password?forgot_password_token=${forgot_password_token}`
-    const emailHtml = generateEmailPassword(email, verificationLink, forgot_password_token)
-    await sendMail({
-      email: email,
-      subject: 'Mail Xác Nhận Đổi Mật Khẩu',
-      html: emailHtml
-    })
+    const verificationLink = `${process.env.BACKEND_URL}/verify-forgot-password?forgot_password_token=${digit}`
+    const emailHtml = generateEmailVerify(email, verificationLink, digit)
+    // await sendMail({
+    //   email: email,
+    //   subject: 'Email Verification Mail',
+    //   html: emailHtml
+    // })
 
     console.log('forgot_password_token: ', forgot_password_token)
-
+    console.log('digit: ', digit)
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD
     }
@@ -196,7 +212,8 @@ class UsersService {
       {
         $set: {
           password: hashPassword(password),
-          forgot_password_token: ''
+          forgot_password_token: '',
+          updated_at: '$$NOW'
         }
       }
     ])

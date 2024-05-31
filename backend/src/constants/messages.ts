@@ -1,54 +1,54 @@
 export const USERS_MESSAGES = {
-  VALIDATION_ERROR: 'Validation error',
+  VALIDATION_ERROR: 'Lỗi xác thực',
   //name
-  NAME_IS_REQUIRED: 'Name is required',
-  NAME_MUST_BE_A_STRING: 'Name must be a string',
-  NAME_LENGTH_MUST_BE_FROM_1_TO_100: 'Name length must be from 1 to 100',
+  NAME_IS_REQUIRED: 'Tên là bắt buộc',
+  NAME_MUST_BE_A_STRING: 'Tên phải là một chuỗi',
+  NAME_LENGTH_MUST_BE_FROM_1_TO_100: 'Độ dài tên phải từ 1 đến 100 ký tự',
   //email
-  EMAIL_ALREADY_EXISTS: 'Email already exists',
-  EMAIL_IS_REQUIRED: 'Email is required',
-  EMAIL_IS_INVALID: 'Email is invalid',
-  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token is required',
-  USER_NOT_FOUND: 'User not found',
-  EMAIL_ALREADY_VERIFIED_BEFORE: 'Email already verified before',
-  EMAIL_VERIFY_SUCCESS: 'Email verify success',
-  RESEND_VERIFY_EMAIL_SUCCESS: 'Resend verify email success',
-  YOU_MUST_TO_VERIFY_EMAIL: 'You must verify email before login',
-
+  EMAIL_ALREADY_EXISTS: 'Email đã tồn tại',
+  EMAIL_IS_REQUIRED: 'Email là bắt buộc',
+  EMAIL_IS_INVALID: 'Email không hợp lệ',
+  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Mã xác minh email là bắt buộc',
+  USER_NOT_FOUND: 'Không tìm thấy người dùng',
+  EMAIL_ALREADY_VERIFIED_BEFORE: 'Email đã được xác minh trước đó',
+  EMAIL_VERIFY_SUCCESS: 'Xác minh email thành công',
+  RESEND_VERIFY_EMAIL_SUCCESS: 'Gửi lại email xác minh thành công',
+  YOU_NEED_TO_VERIFY_EMAIL: 'Bạn cần xác minh email để tiếp tục đăng nhập',
   //password
-  PASSWORD_IS_REQUIRED: 'Password is required',
-  PASSWORD_MUST_BE_A_STRING: 'Password must be a string',
-  PASSWORD_LENGTH_MUST_BE_FROM_8_TO_50: 'Password length must be from 8 to 50',
+  PASSWORD_IS_REQUIRED: 'Mật khẩu là bắt buộc',
+  PASSWORD_MUST_BE_A_STRING: 'Mật khẩu phải là một chuỗi',
+  PASSWORD_LENGTH_MUST_BE_FROM_8_TO_50: 'Độ dài mật khẩu phải từ 8 đến 50 ký tự',
   PASSWORD_MUST_BE_STRONG:
-    'Password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol',
+    'Mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất 1 chữ cái thường, 1 chữ cái hoa, 1 chữ số và 1 ký tự đặc biệt',
   //confirmPassword
-  CONFIRM_PASSWORD_IS_REQUIRED: 'Confirm password is required',
-  CONFIRM_PASSWORD_MUST_BE_A_STRING: 'Confirm password must be a string',
-  CONFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_50: 'Confirm length must be from 8 to 50',
+  CONFIRM_PASSWORD_IS_REQUIRED: 'Xác nhận mật khẩu là bắt buộc',
+  CONFIRM_PASSWORD_MUST_BE_A_STRING: 'Xác nhận mật khẩu phải là một chuỗi',
+  CONFIRM_PASSWORD_LENGTH_MUST_BE_FROM_8_TO_50: 'Độ dài xác nhận mật khẩu phải từ 8 đến 50 ký tự',
   CONFIRM_PASSWORD_MUST_BE_STRONG:
-    'Confirm password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 symbol',
-  CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Confirm password must be the same as password',
-  CHECK_EMAIL_TO_RESET_PASSWORD: 'Check email to reset password',
+    'Xác nhận mật khẩu phải dài ít nhất 8 ký tự và chứa ít nhất 1 chữ cái thường, 1 chữ cái hoa, 1 chữ số và 1 ký tự đặc biệt',
+  CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD: 'Xác nhận mật khẩu phải giống với mật khẩu',
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Kiểm tra email để đặt lại mật khẩu',
 
   //Forgot-password
-  FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
-  INVALID_FORGOT_PASSWORD_TOKEN: 'Invalid forgot password token',
-  VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Verify forgot password token success',
+  FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Mã token để quên mật khẩu là bắt buộc',
+  INVALID_FORGOT_PASSWORD_TOKEN: 'Mã token để quên mật khẩu không hợp lệ',
+  VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Xác minh mã token để quên mật khẩu thành công',
 
   //Reset-password
-  RESET_PASSWORD_SUCCESS: 'Reset password success',
+  RESET_PASSWORD_SUCCESS: 'Đặt lại mật khẩu thành công',
 
   //dateOfBirth
-  DATE_OF_BIRTH_BE_ISO8601: 'Date of birth must be ISO8601',
+  DATE_OF_BIRTH_BE_ISO8601: 'Ngày sinh phải theo định dạng ISO8601',
   //user
-  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email or password is incorrect',
+  EMAIL_OR_PASSWORD_IS_INCORRECT: 'Email hoặc mật khẩu không đúng',
   //login:
-  LOGIN_SUCCESS: 'Login success',
-  REGISTER_SUCCESS: 'Register success',
+  LOGIN_SUCCESS: 'Đăng nhập thành công',
+  REGISTER_SUCCESS: 'Đăng ký thành công',
+  LOGIN_FAIL: 'Đăng nhập với quyền admin thất bại',
   //logout:
-  ACCESS_TOKEN_IS_REQUIRED: 'Access token is required',
-  REFRESH_TOKEN_IS_REQUIRED: 'Refresh token is required',
-  REFRESH_TOKEN_IS_INVALID: 'Refresh token is invalid',
-  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Used refresh token or not exist',
-  LOGOUT_SUCCESS: 'Logout success'
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token là bắt buộc',
+  REFRESH_TOKEN_IS_REQUIRED: 'Refresh token là bắt buộc',
+  REFRESH_TOKEN_IS_INVALID: 'Refresh token không hợp lệ',
+  USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Refresh token đã được sử dụng hoặc không tồn tại',
+  LOGOUT_SUCCESS: 'Đăng xuất thành công'
 } as const

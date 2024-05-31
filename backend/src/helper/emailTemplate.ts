@@ -83,7 +83,8 @@ export function generateEmailVerify(username: string, verificationLink: string, 
             <p>Cảm ơn bạn đã đăng ký với chúng tôi. Để hoàn tất quá trình đăng ký, vui lòng xác minh email của bạn bằng
                 cách nhấp vào nút bên dưới:</p>
             <div class=" button-container" style="text-align: center">
-                <a class="button-link" href="${verificationLink}">Xác Nhận</a>
+                <a class="button-link" href="${verificationLink}">Xác Nhận ${email_verify_token}</a>
+                
             </div>
             <p>Nếu bạn chưa đăng ký tài khoản này, bạn có thể bỏ qua email này.</p>
             <p>Trân Trọng,<br>MomBabyMilk Shop</p>

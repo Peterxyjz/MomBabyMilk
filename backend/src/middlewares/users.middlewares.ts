@@ -4,6 +4,7 @@ import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/model/Errors'
@@ -68,9 +69,11 @@ const confirmPasswordSchema: ParamSchema = {
   },
   custom: {
     options: (value, { req }) => {
+      console.log('mid-register confirm')
       if (value !== req.body.password) {
         throw new Error(USERS_MESSAGES.CONFIRM_PASSWORD_MUST_BE_THE_SAME_AS_PASSWORD)
       }
+      console.log('mid-register confirm: ok')
       return true
     }
   }
@@ -90,19 +93,20 @@ const forgotPasswordTokenSchema: ParamSchema = {
       //nếu có thì decode nó để lấy đc thông tin của người dùng
       try {
         console.log('value: ' + value)
+        const user = await databaseService.users.findOne({ forgot_password_token: value })
 
-        const decoded_forgot_password_token = await verifyToken({
-          token: value,
-          secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
-        })
+        // const decoded_forgot_password_token = await verifyToken({
+        //   token: value,
+        //   secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+        // })
         //lưu decoded_forgot_password_token vào req để khi nào muốn biết ai gữi req thì dùng
-        ;(req as Request).decoded_forgot_password_token = decoded_forgot_password_token
+        // ;(req as Request).decoded_forgot_password_token = decoded_forgot_password_token
         //dùng user_id trong decoded_forgot_password_token để tìm user trong database
         //sẽ nhanh hơn là dùng forgot_password_token(value) để tìm user trong database
-        const { user_id } = decoded_forgot_password_token
-        const user = await databaseService.users.findOne({
-          _id: new ObjectId(user_id)
-        })
+        // const { user_id } = decoded_forgot_password_token
+        // const user = await databaseService.users.findOne({
+        //   _id: new ObjectId(user_id)
+        // })
         //nếu k tìm đc user thì throw error
         if (user === null) {
           throw new ErrorWithStatus({
@@ -119,6 +123,7 @@ const forgotPasswordTokenSchema: ParamSchema = {
             status: HTTP_STATUS.UNAUTHORIZED //401
           })
         }
+        ;(req as Request).decoded_forgot_password_token = user._id.toString()
       } catch (error) {
         if (error instanceof JsonWebTokenError) {
           throw new ErrorWithStatus({
@@ -144,15 +149,16 @@ export const loginValidator = validate(
         trim: true,
         custom: {
           options: async (value, { req }) => {
+            console.log('do')
+
             const user = await databaseService.users.findOne({
               email: value,
               password: hashPassword(req.body.password)
             })
             if (user === null) {
               throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
-            }
-            if (user.verify == 0) {
-              throw new Error(USERS_MESSAGES.YOU_MUST_TO_VERIFY_EMAIL)
+            } else if (user.verify == UserVerifyStatus.Unverified) {
+              throw new Error(USERS_MESSAGES.YOU_NEED_TO_VERIFY_EMAIL)
             }
             req.user = user // lưu user vào req để dùng ở loginController
             return true
@@ -218,6 +224,7 @@ export const registerValidator = validate(
         trim: true,
         custom: {
           options: async (value) => {
+            console.log('dô mid register: emai;')
             const isExistEmail = await usersService.checkEmailExist(value)
             if (isExistEmail) {
               throw new Error(USERS_MESSAGES.EMAIL_ALREADY_EXISTS)
@@ -352,13 +359,21 @@ export const emailVerifyTokenValidator = validate(
             }
             try {
               //nếu có thì ta verify nó để có đc thông tin của người dùng
-              const decoded_email_verify_token = await verifyToken({
-                token: value,
-                secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
-              })
+              // const decoded_email_verify_token = await verifyToken({
+              //   token: value,
+              //   secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+              // })
 
               //nếu có thì ta lưu decoded_email_verify_token vào req để khi nào muốn biết ai gữi req thì dùng
-              ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+              // ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+
+              const user = await databaseService.users.findOne({ email_verify_token: value })
+
+              if (user === null) {
+                throw new Error()
+              } else {
+                ;(req as Request).decoded_email_verify_token = user._id.toString()
+              }
             } catch (error) {
               //trong middleware này ta throw để lỗi về default error handler xử lý
               if (error instanceof JsonWebTokenError) {
