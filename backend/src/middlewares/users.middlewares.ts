@@ -347,21 +347,21 @@ export const emailVerifyTokenValidator = validate(
             }
             try {
               //nếu có thì ta verify nó để có đc thông tin của người dùng
-              // const decoded_email_verify_token = await verifyToken({
-              //   token: value,
-              //   secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
-              // })
+              const decoded_email_verify_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+              })
 
               //nếu có thì ta lưu decoded_email_verify_token vào req để khi nào muốn biết ai gữi req thì dùng
-              // ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
+              ;(req as Request).decoded_email_verify_token = decoded_email_verify_token
 
-              const user = await databaseService.users.findOne({ email_verify_token: value })
+              // const user = await databaseService.users.findOne({ email_verify_token: value })
 
-              if (user === null) {
-                throw new Error()
-              } else {
-                ;(req as Request).decoded_email_verify_token = user._id.toString()
-              }
+              // if (user === null) {
+              //   throw new Error()
+              // } else {
+              //   ;(req as Request).decoded_email_verify_token = user._id.toString()
+              // }
             } catch (error) {
               //trong middleware này ta throw để lỗi về default error handler xử lý
               if (error instanceof JsonWebTokenError) {
@@ -440,8 +440,13 @@ export const checkEmailToken = async (req: Request, res: Response, next: NextFun
   console.log(JSON.stringify(req.query))
   console.log(req.body.email_verify_token)
   const list = JSON.stringify(req.query)
-  console.log(req.query.email_verify_token)
-  req.body.email_verify_token = req.query.email_verify_token
+  console.log('email_verify: ', req.query.digit)
+  console.log('usser: ', req.query.user_id)
+  req.body.email_verify_token = await usersService.signEmailVerifyToken(
+    req.query.user_id as string,
+    req.query.digit as string
+  )
+  console.log(req.body.email_verify_token)
   next()
 }
 

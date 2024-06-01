@@ -36,16 +36,17 @@ class UsersService {
     const roleId = role?._id?.toString() || ''
 
     const user_id = new ObjectId()
-    const email_verify_token = await this.signEmailVerifyToken(user_id.toString())
-    //ta đành phải tự tạo user_id thay vì để mongodb tự tạo
-    //vì ta cần user_id để tạo email_verify_token
     const digit = await hashToSixDigit(user_id.toString())
     console.log('6 so: ', digit)
+    const email_verify_token = await this.signEmailVerifyToken(user_id.toString(), digit)
+    //ta đành phải tự tạo user_id thay vì để mongodb tự tạo
+    //vì ta cần user_id để tạo email_verify_token
+
     const result = await databaseService.users.insertOne(
       new User({
         ...payload,
         _id: user_id,
-        email_verify_token: digit,
+        email_verify_token,
         password: hashPassword(payload.password),
         role_id: roleId
       })
@@ -70,7 +71,7 @@ class UsersService {
     //user_id ta có là string, mà trong database thì user_id là ObjectId
     //nên ta không truyền là user_id: user_id, mà là user_id: new ObjectId(user_id)
     console.log('email_verify_token', email_verify_token) //mô phỏng send email, test xong xóa
-    return { access_token, refresh_token, email_verify_token, user }
+    return { access_token, refresh_token, email_verify_token, user, digit }
     //ta sẽ return 2 cái này về cho client
     //thay vì return user_Id về cho client
   }
@@ -95,9 +96,9 @@ class UsersService {
     }
   }
 
-  private signEmailVerifyToken(user_id: string) {
+  public signEmailVerifyToken(user_id: string, digit: string) {
     return signToken({
-      payload: { user_id, token_type: TokenType.EmailVerificationToken },
+      payload: { user_id, digit, token_type: TokenType.EmailVerificationToken },
       options: { expiresIn: process.env.EMAIL_VERIFY_TOKEN_EXPIRE_IN },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string //thêm
     })
@@ -134,16 +135,17 @@ class UsersService {
 
   async resendEmailVerify(user_id: string) {
     //tạo ra email_verify_token mới
-    const email_verify_token = await this.signEmailVerifyToken(user_id)
+    const digit = await hashToSixDigit(user_id)
+    const email_verify_token = await this.signEmailVerifyToken(user_id, digit)
     //chưa làm chức năng gữi email, nên giả bộ ta đã gữi email cho client rồi, hiển thị bằng console.log
     console.log('resend verify email token', email_verify_token)
-    const digit = await hashToSixDigit(user_id)
+  
 
     //vào database và cập nhật lại email_verify_token mới trong table user
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
         $set: {
-          email_verify_token: digit,
+          email_verify_token,
           updated_at: '$$NOW'
         }
       }

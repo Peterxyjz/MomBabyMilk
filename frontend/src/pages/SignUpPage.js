@@ -39,6 +39,7 @@ const SignUpPage = () => {
       })
       .then((res) => {
         alert('Đăng ký thành công!');
+        localStorage.setItem("user", JSON.stringify(res.data.user));
         navigate("/otp");
       })
       .catch((error) => {

@@ -60,8 +60,8 @@ export const registerController = async (
   console.log('dô register Controller')
 
   const result = await usersService.register(req.body) // thay luôn
-  const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.user?.email_verify_token}`
-  const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.user?.email_verify_token as string)
+  const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.digit}`
+  const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.digit)
   await sendMail({
     email: req.body.email,
     subject: 'Email Verification Mail',
@@ -91,8 +91,8 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
   //nên thay vào đó ta sẽ lấy thông tin _id của user từ decoded_email_verify_token mà ta thu đc từ middleware trước
   //và tìm user thông qua _id đó
   // const { user_id } = req.decoded_email_verify_token as TokenPayload
-  const user_id = req.decoded_email_verify_token as string
-
+  const { user_id } = req.decoded_email_verify_token as TokenPayload
+  const { digit } = req.decoded_email_verify_token as TokenPayload
   const user = await databaseService.users.findOne({
     _id: new ObjectId(user_id)
   }) //hiệu năng cao hơn
@@ -112,6 +112,12 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
     })
   }
+  if(user.email_verify_token != req.body.email_verify_token){
+    return res.json({
+      message: USERS_MESSAGES.OTP_IS_INVALID
+    })
+  }
+
   const result = await usersService.verifyEmail(user_id)
   //để cập nhật lại email_verify_token thành rỗng và tạo ra access_token và refresh_token mới
   //gữi cho người vừa request email verify đang nhập
