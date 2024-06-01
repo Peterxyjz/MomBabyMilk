@@ -112,7 +112,7 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
     })
   }
-  if(user.email_verify_token != req.body.email_verify_token){
+  if (user.email_verify_token != req.body.email_verify_token) {
     return res.json({
       message: USERS_MESSAGES.OTP_IS_INVALID
     })
