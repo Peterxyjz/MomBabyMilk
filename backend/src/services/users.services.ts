@@ -139,7 +139,6 @@ class UsersService {
     const email_verify_token = await this.signEmailVerifyToken(user_id, digit)
     //chưa làm chức năng gữi email, nên giả bộ ta đã gữi email cho client rồi, hiển thị bằng console.log
     console.log('resend verify email token', email_verify_token)
-  
 
     //vào database và cập nhật lại email_verify_token mới trong table user
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
