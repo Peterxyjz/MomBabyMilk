@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import imgne from '../assets/images/inner-page/otp.png'
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import axios from "axios";
 const OtpPage = () => {
+    const user = JSON.parse(localStorage.getItem("user")||'')
+    const user_id = user.user_id.toString()
+
     const navigate = useNavigate();
     const [formValues, setFormValues] = useState({
         first: '',
@@ -27,7 +30,7 @@ const OtpPage = () => {
         event.preventDefault();
         const otp = `${formValues.first}${formValues.second}${formValues.third}${formValues.fourth}${formValues.fifth}${formValues.sixth}`;
         await axios
-            .get(`http://localhost:4000/users/verify-email?email_verify_token=${otp}`)
+            .get(`http://localhost:4000/users/verify-email?email_verify_token=${otp}&user_id=${user_id}`)
             .then((res) => {
                 console.log(res);
                 localStorage.setItem('user', JSON.stringify(res.data.user));
