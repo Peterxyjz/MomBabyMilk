@@ -1,5 +1,0 @@
-Link: mongodb+srv://passSWP301:passSWP301@mombabymilk.lrg7esv.mongodb.net/
-
-Account: 
-username: passSWP301
-password: passSWP301
