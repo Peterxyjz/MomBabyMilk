@@ -8,7 +8,6 @@ interface ProductType {
   description: string
   age: string
   discount: number
-  img_base64: string
 }
 
 export default class Product {
@@ -20,7 +19,6 @@ export default class Product {
   description: string
   age: string
   discount: number
-  img_base64: string
   constructor(product: ProductType) {
     this._id = product._id || new ObjectId() // tự tạo id
     this.brand_id = product.brand_id
@@ -30,6 +28,5 @@ export default class Product {
     this.description = product.description
     this.age = product.age
     this.discount = product.discount
-    this.img_base64 = product.img_base64
   }
 }

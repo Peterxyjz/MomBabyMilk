@@ -156,9 +156,9 @@ class UsersService {
   }
 
   //tạo hàm signForgotPasswordToken
-  private signForgotPasswordToken(user_id: string) {
+  public signForgotPasswordToken(user_id: string, digit: string) {
     return signToken({
-      payload: { user_id, token_type: TokenType.ForgotPasswordToken },
+      payload: { user_id, digit, token_type: TokenType.ForgotPasswordToken },
       options: { expiresIn: process.env.FORGOT_PASSWORD_TOKEN_EXPIRE_IN },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string //thêm
     })
@@ -169,17 +169,21 @@ class UsersService {
 
   async forgotPassword(user_id: string, email: string) {
     //tạo ra forgot_password_token
-    const forgot_password_token = await this.signForgotPasswordToken(user_id)
+    const digit = hashToSixDigit(user_id)
+    console.log('digit-forgot: ', digit)
+    console.log('user_id: ', user_id)
+
+    const forgot_password_token = await this.signForgotPasswordToken(user_id, digit)
     //cập nhật vào forgot_password_token và user_id
     // await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
     //   {
     //     $set: { forgot_password_token: forgot_password_token, updated_at: '$$NOW' }
     //   }
     // ])
-    const digit = hashToSixDigit(user_id)
+
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       {
-        $set: { forgot_password_token: digit, updated_at: '$$NOW' }
+        $set: { forgot_password_token: forgot_password_token, updated_at: '$$NOW' }
       }
     ])
 

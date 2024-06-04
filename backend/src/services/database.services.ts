@@ -4,8 +4,6 @@ import User from '~/model/schemas/User.schema'
 import Role from '~/model/schemas/Role.schema'
 import RefreshToken from '~/model/schemas/RefreshToken.schema'
 import Category from '~/model/schemas/Category.schema'
-import Brand from '~/model/schemas/Brand.schema'
-import Product from '~/model/schemas/Product.schema'
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@mombabymilk.lrg7esv.mongodb.net/?retryWrites=true&w=majority&appName=MomBabyMilk`
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -40,17 +38,9 @@ class DatabaseService {
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string) // users là tên của collection
   }
-  //category:
   get categories(): Collection<Category> {
     return this.db.collection(process.env.DB_CATEGORIES_COLLECTION as string)
-  }
-  //brand:
-  get brands(): Collection<Brand> {
-    return this.db.collection(process.env.DB_BRANDS_COLLECTION as string)
-  }
-  //products:
-  get products(): Collection<Product> {
-    return this.db.collection(process.env.DB_PRODUCTS_COLLECTION as string)
+    //vào db lấy ra collection users, và vì chuỗi truyền vào có thể là undefined nên mình phải rằng buộc nó là string 'thử xóa as string để thấy lỗi'
   }
 }
 //từ class tạo object và export nó ra ngoài

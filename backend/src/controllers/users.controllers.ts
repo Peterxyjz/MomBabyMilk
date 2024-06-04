@@ -17,6 +17,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import { ObjectId } from 'mongodb'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { UserVerifyStatus } from '~/constants/enums'
+import { verifyToken } from '~/utils/jwt'
 
 //login:
 export const loginController = async (req: Request, res: Response) => {
@@ -62,11 +63,11 @@ export const registerController = async (
   const result = await usersService.register(req.body) // thay luôn
   const verificationLink = `${process.env.BACKEND_URL}/verify-email?email_verify_token=${result.digit}`
   const emailHtml = generateEmailVerify(req.body.username, verificationLink, result.digit)
-  await sendMail({
-    email: req.body.email,
-    subject: 'Email Verification Mail',
-    html: emailHtml
-  })
+  // await sendMail({
+  //   email: req.body.email,
+  //   subject: 'Email Verification Mail',
+  //   html: emailHtml
+  // })
   console.log(result)
   console.log(verificationLink)
 
@@ -92,7 +93,7 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
   //và tìm user thông qua _id đó
   // const { user_id } = req.decoded_email_verify_token as TokenPayload
   const { user_id } = req.decoded_email_verify_token as TokenPayload
-  const { digit } = req.decoded_email_verify_token as TokenPayload
+  const req_digit = req.query.digit
   const user = await databaseService.users.findOne({
     _id: new ObjectId(user_id)
   }) //hiệu năng cao hơn
@@ -112,7 +113,13 @@ export const emailVerifyController = async (req: Request, res: Response, next: N
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED_BEFORE
     })
   }
-  if (user.email_verify_token != req.body.email_verify_token) {
+  const emailtoken = await verifyToken({
+    token: user.email_verify_token,
+    secretOrPublicKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
+  })
+  const { digit } = emailtoken as TokenPayload
+
+  if (req_digit !== digit) {
     return res.json({
       message: USERS_MESSAGES.OTP_IS_INVALID
     })
@@ -189,7 +196,7 @@ export const resetPasswordController = async (
   next: NextFunction
 ) => {
   //middleware resetPasswordValidator đã chạy rồi, nên ta có thể lấy đc user_id từ decoded_forgot_password_token
-  const user_id = req.decoded_forgot_password_token as string
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
   const { password } = req.body
   //vào database tìm user thông qua user_id này và cập nhật lại password mới
   //vì vào database nên ta sẽ code ở user.services

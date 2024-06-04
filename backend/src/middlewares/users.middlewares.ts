@@ -8,6 +8,7 @@ import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/model/Errors'
+import { TokenPayload } from '~/model/requests/User.requests'
 import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 import { hashPassword } from '~/utils/crypto'
@@ -93,20 +94,20 @@ const forgotPasswordTokenSchema: ParamSchema = {
       //nếu có thì decode nó để lấy đc thông tin của người dùng
       try {
         console.log('value: ' + value)
-        const user = await databaseService.users.findOne({ forgot_password_token: value })
+        // const user = await databaseService.users.findOne({ forgot_password_token: value })
 
-        // const decoded_forgot_password_token = await verifyToken({
-        //   token: value,
-        //   secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
-        // })
+        const decoded_forgot_password_token = await verifyToken({
+          token: value,
+          secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+        })
         //lưu decoded_forgot_password_token vào req để khi nào muốn biết ai gữi req thì dùng
-        // ;(req as Request).decoded_forgot_password_token = decoded_forgot_password_token
+        ;(req as Request).decoded_forgot_password_token = decoded_forgot_password_token
         //dùng user_id trong decoded_forgot_password_token để tìm user trong database
         //sẽ nhanh hơn là dùng forgot_password_token(value) để tìm user trong database
-        // const { user_id } = decoded_forgot_password_token
-        // const user = await databaseService.users.findOne({
-        //   _id: new ObjectId(user_id)
-        // })
+        const { user_id } = decoded_forgot_password_token
+        const user = await databaseService.users.findOne({
+          _id: new ObjectId(user_id)
+        })
         //nếu k tìm đc user thì throw error
         if (user === null) {
           throw new ErrorWithStatus({
@@ -117,13 +118,22 @@ const forgotPasswordTokenSchema: ParamSchema = {
         //nếu forgot_password_token đã được sử dụng rồi thì throw error
         //forgot_password_token truyền lên khác với forgot_password_token trong database
         //nghĩa là người dùng đã sử dụng forgot_password_token này rồi
-        if (user.forgot_password_token !== value) {
+
+        const { digit } = (await verifyToken({
+          token: user.forgot_password_token,
+          secretOrPublicKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
+        })) as TokenPayload
+
+        const user_digit = req.body.digit
+        console.log('digit: ', digit)
+        console.log('user+digit: ', user_digit)
+        if (digit !== user_digit) {
           throw new ErrorWithStatus({
             message: USERS_MESSAGES.INVALID_FORGOT_PASSWORD_TOKEN,
             status: HTTP_STATUS.UNAUTHORIZED //401
           })
         }
-        ;(req as Request).decoded_forgot_password_token = user._id.toString()
+        ;(req as Request).decoded_forgot_password_token = decoded_forgot_password_token
       } catch (error) {
         if (error instanceof JsonWebTokenError) {
           throw new ErrorWithStatus({
@@ -457,6 +467,13 @@ export const checkPasswordToken = async (req: Request, res: Response, next: Next
   console.log(req.body.forgot_password_token)
   const list = JSON.stringify(req.query)
   console.log(req.query.forgot_password_token)
-  req.body.forgot_password_token = req.query.forgot_password_token
+  console.log(req.query.user_id)
+  console.log(req.query.digit)
+
+  req.body.forgot_password_token = await usersService.signForgotPasswordToken(
+    req.query.user_id as string,
+    req.query.digit as string
+  )
+  req.body.digit = req.query.digit
   next()
 }
