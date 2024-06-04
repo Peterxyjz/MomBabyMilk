@@ -14,7 +14,7 @@ export default class Brand {
   country: string
   phone: string
   constructor(brand: BrandType) {
-    this._id = brand._id || new ObjectId()
+    this._id = brand._id || new ObjectId() // tự tạo id
     this.brand_name = brand.brand_name
     this.address = brand.address
     this.country = brand.country

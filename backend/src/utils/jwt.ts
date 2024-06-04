@@ -1,7 +1,9 @@
-import jwt from 'jsonwebtoken'
+import jwt, { TokenExpiredError } from 'jsonwebtoken'
 //privateKey là password để được quyền tạo chữ ký jwt
 import { config } from 'dotenv'
 import { TokenPayload } from '~/model/requests/User.requests'
+import { ErrorWithStatus } from '~/model/Errors'
+import HTTP_STATUS from '~/constants/httpStatus'
 config()
 export const signToken = ({
   payload,
@@ -28,7 +30,18 @@ export const signToken = ({
 export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secretOrPublicKey: string }) => {
   return new Promise<TokenPayload>((resolve, reject) => {
     jwt.verify(token, secretOrPublicKey, (error, decoded) => {
-      if (error) throw reject(error)
+      if (error) {
+        if (error instanceof TokenExpiredError) {
+          return reject(
+            new ErrorWithStatus({
+              message: 'Token đã hết hạn',
+              status: HTTP_STATUS.UNAUTHORIZED // 401
+            })
+          )
+        }
+        return reject(error);
+      }
+      // if (error) throw reject(error)
       resolve(decoded as TokenPayload)
     })
   })
