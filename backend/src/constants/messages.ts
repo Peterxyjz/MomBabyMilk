@@ -45,7 +45,7 @@ export const USERS_MESSAGES = {
   //login:
   LOGIN_SUCCESS: 'Đăng nhập thành công',
   REGISTER_SUCCESS: 'Đăng ký thành công',
-  LOGIN_FAIL: 'Đăng nhập với quyền admin thất bại',
+  LOGIN_FAIL: 'Đăng nhập với quyền admin hoặc staff thất bại',
   //logout:
   ACCESS_TOKEN_IS_REQUIRED: 'Access token là bắt buộc',
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token là bắt buộc',

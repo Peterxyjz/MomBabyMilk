@@ -33,22 +33,23 @@ export const loginController = async (req: Request, res: Response) => {
 }
 //admin
 
-export const loginForAdminController = async (req: Request, res: Response) => {
+export const loginForAdminOrStaffController = async (req: Request, res: Response) => {
   const user = req.user as User // lấy user từ req
   const user_id = user._id as ObjectId // lấy _id từ user
-  const isAdmin = await databaseService.roles.findOne({ role_name: 'Admin' })
-  if (isAdmin?._id?.toString() != user.role_id) {
-    return res.status(200).json({
+  const checkRole = await usersService.checkRole(user)
+  const isAdminOrStaff = await databaseService.roles.findOne({ role_name: 'Admin' })
+  if (checkRole === 'Member') {
+    return res.status(400).json({
       message: USERS_MESSAGES.LOGIN_FAIL
     })
   }
   const result = await usersService.login(user_id.toString())
-
+  const isAdmin = checkRole === 'Admin' ? true : false
   return res.status(200).json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
     result: result,
     user,
-    isAdmin: true
+    isAdmin
   })
 }
 

@@ -15,7 +15,7 @@ import {
   emailVerifyController,
   forgotPasswordController,
   loginController,
-  loginForAdminController,
+  loginForAdminOrStaffController,
   logoutController,
   registerController,
   resendEmailVerifyController,
@@ -27,7 +27,7 @@ const usersRouter = Router()
 //user:
 usersRouter.post('/register', registerValidator, wrapAsync(registerController))
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
-usersRouter.post('/login-for-admin', loginValidator, wrapAsync(loginForAdminController))
+usersRouter.post('/login-admin-staff', loginValidator, wrapAsync(loginForAdminOrStaffController))
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapAsync(logoutController))
 usersRouter.get('/verify-email', checkEmailToken, emailVerifyTokenValidator, wrapAsync(emailVerifyController))
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))

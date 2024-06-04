@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { UserVerifyStatus } from '~/constants/enums'
+import { UserAccountStatus, UserVerifyStatus } from '~/constants/enums'
 
 //đặt interface vì theo chuẩn ts thôi, chứ làm thực tế thì khác
 interface UserType {
@@ -20,6 +20,7 @@ interface UserType {
   email_verify_token?: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token?: string // jwt hoặc '' nếu đã xác thực email
   verify?: UserVerifyStatus
+  isActive?: UserAccountStatus
 }
 
 export default class User {
@@ -40,6 +41,7 @@ export default class User {
   email_verify_token: string // jwt hoặc '' nếu đã xác thực email
   forgot_password_token: string // jwt hoặc '' nếu đã xác thực email
   verify: UserVerifyStatus
+  isActive: UserAccountStatus
   constructor(user: UserType) {
     const date = new Date() //tạo này cho ngày created_at updated_at bằng nhau
     this._id = user._id || new ObjectId() // tự tạo id
@@ -59,5 +61,6 @@ export default class User {
     this.email_verify_token = user.email_verify_token || ''
     this.forgot_password_token = user.forgot_password_token || ''
     this.verify = user.verify || UserVerifyStatus.Unverified
+    this.isActive = user.isActive || UserAccountStatus.Actived
   }
 }
