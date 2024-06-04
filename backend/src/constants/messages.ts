@@ -14,7 +14,7 @@ export const USERS_MESSAGES = {
   EMAIL_VERIFY_SUCCESS: 'Xác minh email thành công',
   RESEND_VERIFY_EMAIL_SUCCESS: 'Gửi lại email xác minh thành công',
   YOU_NEED_TO_VERIFY_EMAIL: 'Bạn cần xác minh email để tiếp tục đăng nhập',
-  OTP_IS_INVALID: "OTP_IS_INVALID",
+  OTP_IS_INVALID: 'OTP_IS_INVALID',
   //password
   PASSWORD_IS_REQUIRED: 'Mật khẩu là bắt buộc',
   PASSWORD_MUST_BE_A_STRING: 'Mật khẩu phải là một chuỗi',
@@ -51,5 +51,18 @@ export const USERS_MESSAGES = {
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token là bắt buộc',
   REFRESH_TOKEN_IS_INVALID: 'Refresh token không hợp lệ',
   USED_REFRESH_TOKEN_OR_NOT_EXIST: 'Refresh token đã được sử dụng hoặc không tồn tại',
-  LOGOUT_SUCCESS: 'Đăng xuất thành công'
+  LOGOUT_SUCCESS: 'Đăng xuất thành công',
+  //CRUD
+  //upload:
+  UPLOAD_SUCCESS: 'Upload thành công',
+  UPLOAD_FAIL: 'Upload thật bài',
+  //get:
+  GET_SUCCESS: 'Lấy thành công',
+  GET_FAIL: 'Lấy thất bại',
+  //update:
+  UPDATE_SUCCESS: 'Cập nhật thành công',
+  UPDATE_FAIL: 'Cập nhật thất bại',
+  //delete:
+  DELETE_SUCCESS: 'Xóa thành công',
+  DELETE_FAIL: 'Xóa thất bại'
 } as const

@@ -5,6 +5,9 @@ const port = 4000 //port là port đó
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import cors from 'cors'
+import productsRouter from './routes/products.routes'
+import categoriesRouter from './routes/categories.routes'
+import brandsRouter from './routes/brands.routes'
 databaseService.connect()
 const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000']
 
@@ -16,13 +19,11 @@ app.get('/', (req, res) => {
   res.send('hello world')
 })
 
-//api: http://localhost:4000/users/login
-//dùng trên postman
 app.use('/users', usersRouter) //route handler
-
-//seach
-
-
+app.use('/users', usersRouter) //route handler
+app.use('/products', productsRouter)
+app.use('/categories', categoriesRouter)
+app.use('/brands', brandsRouter)
 app.use(defaultErrorHandler)
 app.listen(port, () => {
   console.log(`Project MomBabyMilk này đang chạy trên post ${port}`)
