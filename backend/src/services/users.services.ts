@@ -2,9 +2,9 @@ import { body } from 'express-validator'
 import User from '~/model/schemas/User.schema'
 import databaseService from './database.services'
 import { RegisterReqBody } from '~/model/requests/User.requests'
-import { hashPassword, hashToSixDigit } from '~/utils/crypto'
-import { signToken } from '~/utils/jwt'
-import { TokenType, UserVerifyStatus } from '~/constants/enums'
+import { hashPassword } from '~/utils/crypto'
+import { hashToSixDigit, signToken } from '~/utils/jwt'
+import { TokenType, UserAccountStatus, UserVerifyStatus } from '~/constants/enums'
 import Role from '~/model/schemas/Role.schema'
 import RefreshToken from '~/model/schemas/RefreshToken.schema'
 import { ObjectId } from 'mongodb'
@@ -36,7 +36,7 @@ class UsersService {
     const roleId = role?._id?.toString() || ''
 
     const user_id = new ObjectId()
-    const digit = await hashToSixDigit(user_id.toString())
+    const digit = await hashToSixDigit()
     console.log('6 so: ', digit)
     const email_verify_token = await this.signEmailVerifyToken(user_id.toString(), digit)
     //ta đành phải tự tạo user_id thay vì để mongodb tự tạo
@@ -48,7 +48,8 @@ class UsersService {
         _id: user_id,
         email_verify_token,
         password: hashPassword(payload.password),
-        role_id: roleId
+        role_id: roleId,
+        isActive: UserAccountStatus.Actived
       })
     )
     const user = await databaseService.users.findOne({ _id: user_id })
@@ -135,10 +136,12 @@ class UsersService {
 
   async resendEmailVerify(user_id: string) {
     //tạo ra email_verify_token mới
-    const digit = await hashToSixDigit(user_id)
+    const digit = await hashToSixDigit()
     const email_verify_token = await this.signEmailVerifyToken(user_id, digit)
+
+    console.log('digit_again: ', digit)
+
     //chưa làm chức năng gữi email, nên giả bộ ta đã gữi email cho client rồi, hiển thị bằng console.log
-    console.log('resend verify email token', email_verify_token)
 
     //vào database và cập nhật lại email_verify_token mới trong table user
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
@@ -169,7 +172,7 @@ class UsersService {
 
   async forgotPassword(user_id: string, email: string) {
     //tạo ra forgot_password_token
-    const digit = hashToSixDigit(user_id)
+    const digit = hashToSixDigit()
     console.log('digit-forgot: ', digit)
     console.log('user_id: ', user_id)
 
@@ -227,6 +230,11 @@ class UsersService {
     return {
       message: USERS_MESSAGES.RESET_PASSWORD_SUCCESS
     }
+  }
+
+  async checkRole(user: User) {
+    const roleAccount = await databaseService.roles.findOne({ _id: new ObjectId(user.role_id) })
+    return roleAccount?.role_name
   }
 }
 

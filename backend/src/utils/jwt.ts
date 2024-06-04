@@ -39,7 +39,7 @@ export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secre
             })
           )
         }
-        return reject(error);
+        return reject(error)
       }
       // if (error) throw reject(error)
       resolve(decoded as TokenPayload)
@@ -47,15 +47,21 @@ export const verifyToken = ({ token, secretOrPublicKey }: { token: string; secre
   })
 }
 
-export function hashToSixDigit(token: string) {
+export function hashToSixDigit() {
   // Bước 1: Mã hóa chuỗi thành SHA-256
   // const sha256Hash = crypto.createHash('sha256').update(inputString).digest('hex');
 
   // Bước 2: Chuyển đổi mã băm thành số nguyên lớn (big integer)
-  const bigInt = BigInt('0x' + token)
+  let sixDigit = ''
+  for (let index = 0; index <= 5; index++) {
+    sixDigit += getRandomInt(0, 9)
+  }
+
 
   // Bước 3: Chuyển đổi số nguyên lớn thành chuỗi và lấy 6 ký tự đầu tiên
-  const sixDigitString = bigInt.toString().slice(0, 6)
 
-  return sixDigitString
+  return sixDigit
+}
+const getRandomInt = (min: number, max: number) => {
+  return Math.floor(Math.random() * (max - min)) + min
 }

@@ -8,6 +8,8 @@ interface ProductType {
   description: string
   age: string
   discount: number
+  imgUrl: string
+  isActive: boolean
 }
 
 export default class Product {
@@ -19,6 +21,8 @@ export default class Product {
   description: string
   age: string
   discount: number
+  imgUrl: string
+  isActive?: boolean
   constructor(product: ProductType) {
     this._id = product._id || new ObjectId() // tự tạo id
     this.brand_id = product.brand_id
@@ -28,5 +32,7 @@ export default class Product {
     this.description = product.description
     this.age = product.age
     this.discount = product.discount
+    this.imgUrl = product.imgUrl
+    this.isActive = product.isActive
   }
 }

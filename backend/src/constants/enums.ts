@@ -9,3 +9,13 @@ export enum TokenType {
   ForgotPasswordToken, //2
   EmailVerificationToken //3
 }
+export enum UserAccountStatus {
+  Blocked,
+  Actived
+}
+export enum OrderStatus {
+  Required,
+  Process,
+  Ship,
+  Completed
+}
